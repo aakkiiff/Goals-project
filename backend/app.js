@@ -84,14 +84,14 @@ app.delete('/goals/:id', async (req, res) => {
 });
 
 mongoose.connect(
-  `mongodb+srv://akif:akif@cluster0.js9j1st.mongodb.net/?retryWrites=true&w=majority`,
+  `mongodb+srv://xxx:xxx@cluster0.js9j1st.mongodb.net/?retryWrites=true&w=majority`,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   },
   (err) => {
     if (err) {
-      console.error('FAILED TO CONNECT TO MONGODB');
+      console.error('FAILED TO CONNECT TO MONGODB,did you added the mongodb url?');
       console.error(err);
     } else {
       console.log('CONNECTED TO MONGODB!!');
