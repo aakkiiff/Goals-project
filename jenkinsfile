@@ -34,8 +34,8 @@ pipeline {
             steps {
                 bat "kubectl get deploy"
                 bat "kubectl apply -f ./k8s"
-                bat "kubectl set image deployments/server-deployment server=akifboi/jenkins-cicd-server:%bid%"
-                bat "kubectl set image deployments/client-deployment client=akifboi/jenkins-cicd-client:%bid%"
+                bat "kubectl rollout restart -f .\k8s\client-deployment.yml"
+                bat "kubectl rollout restart -f .\k8s\server-deplpoyment.yml"
 
                 echo "hopefully everything will work ......see u soon"
             }
