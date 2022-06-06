@@ -23,6 +23,23 @@
     lastly , run `kubectl apply -f ./k8s/`
   go to the loadbalancer link to check the deployment
 
+# for jenkins cicd eks deployment
+
+ 1. have jenkins,docker running
+ 2. make a jenkins freestyle job naming it *triggerer*,it will be invoked once code is commited to github
+ 3. add webhook to your github repo , as: yourpublicip/github-webhook/
+ 4. if you are using your personal pc,u can use ngrok [youtube video to set up ngrok](https://youtu.be/adVWQc8T9qg)
+ 5. create a jenkins pipeline job,and configure it to be triggered once *triggerer* finishes its job.
+ 6. on pipeline job paste the jenkins file contents.
+ 7. all commands are for windows batch command so there are those "bat " keywords.change them to sh for linux
+ 8. if using linux change docker login command to this:
+ 9. `echo "$MY_PASSWORD" | docker login --username foo --password-stdin`
+ 10. here MY_PASSWORD should be configured on jenkins secrets and credentials section. *ps this command for some reason doesnt work on windows due to some bug.* 
+ 11. once jenkins ,ngrok,ready make sure to update the docker hub account and repo names from the files
+ 12. create the eks cluster from cluster.yml file or manually from console
+ 13. push ur codes to the git repo and rest will work automatically
+
+
 ## to create cluster form yml file
 
     eksctl  create  cluster  -f  ./cluster.yml
