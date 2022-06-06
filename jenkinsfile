@@ -15,6 +15,7 @@ pipeline {
             steps {
                 bat 'docker login -u "akifboi" -p "password"' //this cmd is only for test perposes in windows 
                 //windows have issues getting password from env secrets linux machine dont have this bugs
+                // echo "$MY_PASSWORD" | docker login --username foo --password-stdin  -> good practice
 
                 bat 'docker build --no-cache -t akifboi/goals-frontend:%bid% -t akifboi/goals-frontend:latest -f ./frontend/Dockerfile ./frontend'
                 bat 'docker build --no-cache -t akifboi/goals-backend:%bid% -t akifboi/goals-backend:latest -f ./backend/Dockerfile ./backend'
@@ -34,9 +35,11 @@ pipeline {
             steps {
                 bat "kubectl get deploy"
                 bat "kubectl apply -f ./k8s"
-                bat "kubectl rollout restart -f .\k8s\client-deployment.yml"
-                bat "kubectl rollout restart -f .\k8s\server-deplpoyment.yml"
 
+                bat "kubectl rollout restart -f ./k8s/client-deployment.yml"
+                bat "kubectl rollout restart -f ./k8s/server-deplpoyment.yml"
+                //bat "kubectl set image deployments/client-deployment client=akifboi/multi-client:%bid%"
+                
                 echo "all command has done its job,check pods if they alive and updated"
             }
         }
