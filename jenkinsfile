@@ -17,7 +17,7 @@ pipeline {
                 //windows have issues getting password from env secrets linux machine dont have this bugs
 
                 bat 'docker build --no-cache -t akifboi/goals-frontend:%bid% -t akifboi/goals-frontend:latest -f ./frontend/Dockerfile ./frontend'
-                bat 'docker build -t akifboi/goals-backend:%bid% -t akifboi/goals-backend:latest -f ./backend/Dockerfile ./backend'
+                bat 'docker build --no-cache -t akifboi/goals-backend:%bid% -t akifboi/goals-backend:latest -f ./backend/Dockerfile ./backend'
                 echo "building images done"
 
                 echo "push images to dockerhub"
@@ -37,12 +37,11 @@ pipeline {
                 bat "kubectl rollout restart -f .\k8s\client-deployment.yml"
                 bat "kubectl rollout restart -f .\k8s\server-deplpoyment.yml"
 
-                echo "hopefully everything will work ......see u soon"
+                echo "all command has done its job,check pods if they alive and updated"
             }
         }
         
        
     }
     
-
 }
