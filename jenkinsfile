@@ -30,8 +30,7 @@ pipeline {
                 bat 'docker logout'
             }
         }
-        stage('update eks environment') {
-             
+        stage('update eks environment') {     
             steps {
                 bat "kubectl get deploy"
                 bat "kubectl apply -f ./k8s"
