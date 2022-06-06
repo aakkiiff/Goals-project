@@ -16,7 +16,7 @@ pipeline {
                 bat 'docker login -u "akifboi" -p "password"' //this cmd is only for test perposes in windows 
                 //windows have issues getting password from env secrets linux machine dont have this bugs
 
-                bat 'docker build -t akifboi/goals-frontend:%bid% -t akifboi/goals-frontend:latest -f ./frontend/Dockerfile ./frontend'
+                bat 'docker build --no-cache -t akifboi/goals-frontend:%bid% -t akifboi/goals-frontend:latest -f ./frontend/Dockerfile ./frontend'
                 bat 'docker build -t akifboi/goals-backend:%bid% -t akifboi/goals-backend:latest -f ./backend/Dockerfile ./backend'
                 echo "building images done"
 
