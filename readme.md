@@ -40,7 +40,7 @@
  13. push ur codes to the git repo and rest will work automatically
 
 
-## to create cluster form yml file
+## to create cluster from yml file
 
     eksctl  create  cluster  -f  ./cluster.yml
 ## to add other user(iam role) to access the cluster
