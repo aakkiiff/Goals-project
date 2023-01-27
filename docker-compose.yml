@@ -10,8 +10,8 @@ services:
     build: ./frontend
     stdin_open: true
     tty: true
-    depends_on: 
-      - backend
+    depends_on:
+      - api
 
   nginx:
     build: ./nginx
