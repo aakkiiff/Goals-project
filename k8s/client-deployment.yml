@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: client
-        image: akifboi/goals-frontend
+        image: aakkiiff/goals_project_frontend
 
         ports:
         - containerPort: 3000
