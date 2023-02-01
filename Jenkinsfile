@@ -2,8 +2,11 @@ pipeline {
     agent any
     environment {
         IMAGE_TAG = "${BUILD_NUMBER}"
-        FRONTEND_IMAGE = "aakkiiff/goals_project_frontend"
-        BACKEND_IMAGE = "aakkiiff/goals_project_backend"
+        DOCKERHUB_USER = 'aakkiiff'
+        FRONTEND_APP = "goals_project_frontend"
+        BACKEND_APP = "goals_project_backend"
+        FRONTEND_IMAGE = "${DOCKERHUB_USER}/${FRONTEND_APP}"
+        BACKEND_IMAGE = "${DOCKERHUB_USER}/${BACKEND_APP}"
     }
 
     stages {
