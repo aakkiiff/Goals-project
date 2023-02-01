@@ -59,7 +59,7 @@ pipeline {
              steps {
                  sh 'cat ./k8s/client-deployment.yml'
                 //  sh "sed -i 's/aakkiiff.*/aakkiiff\/goals_project_frontend:${IMAGE_TAG}/g' ./k8s/client-deployment.yml"
-                sh "sed -i 's/aakkiiff.*/${FRONTEND_IMAGE}:${IMAGE_TAG}/g' ./k8s/client-deployment.yml"
+                sh "sed -i 's/goals_project_frontend.*/goals_project_frontend:${IMAGE_TAG}/g' ./k8s/client-deployment.yml"
    
                  sh 'cat ./k8s/client-deployment.yml'
                  
