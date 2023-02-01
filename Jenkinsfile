@@ -55,15 +55,15 @@ pipeline {
         // }
 
 
-        //  stage('UPDATE K8s DEPLOYMENT FILE') {
-        //      steps {
-        //          sh 'cat ./k8s/client-deployment.yml'
-        //          sh "sed -i 's/aakkiiff.*/aakkiiff\/goals_project_frontend:${IMAGE_TAG}/g' client-deployment.yml"
-        //          sh "sed -i 's/aakkiiff.*/aakkiiff\/asd:6/g' client-deployment.yml"
-        //          sh 'cat ./k8s/client-deployment.yml'
+         stage('UPDATE K8s DEPLOYMENT FILE') {
+             steps {
+                 sh 'cat ./k8s/client-deployment.yml'
+                 sh "sed -i 's/aakkiiff.*/aakkiiff\/goals_project_frontend:${IMAGE_TAG}/g' ./k8s/client-deployment.yml"
+   
+                 sh 'cat ./k8s/client-deployment.yml'
                  
-        //          }
-        //      }
+                 }
+             }
             
      }
 }
