@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         IMAGE_TAG = "${BUILD_NUMBER}"
-        FRONTEND_IMAGE = "aakkiiff/goals_project_frontend"
+        FRONTEND_IMAGE = "aakkiiff\/goals_project_frontend"
         BACKEND_IMAGE = "aakkiiff/goals_project_backend"
     }
 
