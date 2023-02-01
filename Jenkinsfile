@@ -48,14 +48,14 @@ pipeline {
                 }
         }
 
-        // stage("DELETE OLD IMAGES"){
-        //     steps{
-        //             sh 'docker rmi ${FRONTEND_IMAGE}:${BUILD_NUMBER}'
-        //             sh 'docker rmi ${FRONTEND_IMAGE}:latest'
-        //             sh 'docker rmi ${BACKEND_IMAGE}:${BUILD_NUMBER}'
-        //             sh 'docker rmi ${BACKEND_IMAGE}:latest'
-        //     }
-        // }
+        stage("DELETE OLD IMAGES"){
+            steps{
+                    sh 'docker rmi ${FRONTEND_IMAGE}:${BUILD_NUMBER}'
+                    sh 'docker rmi ${FRONTEND_IMAGE}:latest'
+                    sh 'docker rmi ${BACKEND_IMAGE}:${BUILD_NUMBER}'
+                    sh 'docker rmi ${BACKEND_IMAGE}:latest'
+            }
+        }
 
 
          stage('UPDATE K8s DEPLOYMENT FILE') {
