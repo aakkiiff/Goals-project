@@ -65,7 +65,6 @@ pipeline {
                 sh "sed -i 's/${BACKEND_APP}.*/${BACKEND_APP}:${IMAGE_TAG}/g' ./k8s/server-deployment.yml"
                 sh 'cat ./k8s/client-deployment.yml'
                 sh 'cat ./k8s/server-deployment.yml'
-                 
                  }
              }
             
