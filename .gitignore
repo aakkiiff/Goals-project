@@ -1,4 +1,4 @@
 runner-config.json
 .vscode/
 
-Generic Webhook Trigger
+plugin: Generic Webhook Trigger
