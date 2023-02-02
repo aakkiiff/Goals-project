@@ -58,7 +58,7 @@ pipeline {
         }
 
 
-         stage('UPDATE K8s DEPLOYMENT FILE') {
+        stage('UPDATE K8s DEPLOYMENT FILE') {
              steps {
                  sh 'cat ./k8s/client-deployment.yml'
                 sh "sed -i 's/${FRONTEND_APP}.*/${FRONTEND_APP}:${IMAGE_TAG}/g' ./k8s/client-deployment.yml"
@@ -67,6 +67,19 @@ pipeline {
                 sh 'cat ./k8s/server-deployment.yml'
                  }
              }
+        stage("PUSH THE CHANGED TAGGED FILE TO GIT MAS"){
+            steps{
+                sh 'git config --global user.email jackakif@gmail.com'
+                sh 'git config --global user.name aakkiiff'
+                sh 'git add ./k8s/client-deployment.yml'
+                sh 'git add ./k8s/server-deployment.yml'
+                sh 'git commit -m "updated tag to ${IMAGE_TAG}"'
+
+                withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'pass', usernameVariable: 'uname')]) {
+                    sh 'git push https://$uname:$pass@github.com/aakkiiff/Goals-project.git master'
+                    }
+                }
+        }
             
      }
 }
