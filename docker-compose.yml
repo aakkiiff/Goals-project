@@ -10,10 +10,7 @@ services:
     build: ./frontend
     stdin_open: true
     tty: true
-
-
     depends_on: 
-
       - api
 
   nginx:
@@ -26,5 +23,4 @@ services:
       - client
   
 volumes: 
-
   logs:
