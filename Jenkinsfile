@@ -14,8 +14,7 @@ pipeline {
             steps {
                 script{
                     cleanWs()
-                }
-                
+                }   
             }
         }
 
@@ -30,7 +29,6 @@ pipeline {
                 sh 'docker build --no-cache -t ${FRONTEND_IMAGE}:${BUILD_NUMBER} -t ${FRONTEND_IMAGE}:latest -f ./frontend/Dockerfile ./frontend'
                 sh 'docker build --no-cache -t ${BACKEND_IMAGE}:${BUILD_NUMBER} -t ${BACKEND_IMAGE}:latest -f ./backend/Dockerfile ./backend'
                 echo "ALL IMAGES BUILT"
-
             }
         }
 
