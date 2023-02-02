@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: client
-        image: aakkiiff/goals_project_frontend:latest
+        image: aakkiiff/goals_project_frontend:8
 
         ports:
         - containerPort: 3000
