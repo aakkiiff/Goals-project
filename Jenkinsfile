@@ -57,7 +57,6 @@ pipeline {
             }
         }
 
-
         stage('UPDATE K8s DEPLOYMENT FILE') {
              steps {
                  sh 'cat ./k8s/client-deployment.yml'
@@ -67,6 +66,7 @@ pipeline {
                 sh 'cat ./k8s/server-deployment.yml'
                  }
              }
+
         stage("PUSH THE CHANGED TAGGED FILE TO GIT MAS"){
             steps{
                 sh 'git config --global user.email jackakif@gmail.com'
