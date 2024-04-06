@@ -74,7 +74,7 @@ pipeline {
                 sh 'git commit -m "updated tag to ${IMAGE_TAG}"'
 
                 withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'pass', usernameVariable: 'uname')]) {
-                    sh 'git push https://$uname:$pass@github.com/aakkiiff/Goals-project.git master'
+                    sh 'git push https://$uname:$pass@github.com/aakkiiff/Goals-project_config.git master'
                     }
                 }
         }
