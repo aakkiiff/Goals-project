@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+
+
+  api:
+    build: ./backend
+    volumes: 
+      - logs:/app/logs
+
+
+  client:
+    build: ./frontend
+    depends_on: 
+      - api
+
+
+  nginx:
+    build: ./nginx
+    ports:
+      - 80:80
+    restart: always
+    depends_on:
+      - api
+      - client
+  
+
+volumes: 
+  logs:
