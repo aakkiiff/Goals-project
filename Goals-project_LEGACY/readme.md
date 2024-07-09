@@ -48,6 +48,8 @@
     eksctl  create  iamidentitymapping  --cluster  test  --region=ap-south-1  --arn  arn:aws:iam::137440810107:user/test01  --group  system:masters  --no-duplicate-arns
 
 
+
+x
     test
 
 ## to add cluster to the context
