@@ -50,4 +50,6 @@
 ## to add cluster to the context
 
     aws  eks  --region  ap-south-1  update-kubeconfig  --name  test-eks-01
-    
+
+
+    .
