@@ -50,7 +50,7 @@
 
 
 x
-    test
+x
 
 ## to add cluster to the context
 
