@@ -51,4 +51,3 @@
 
     aws  eks  --region  ap-south-1  update-kubeconfig  --name  test-eks-01
     
-test1
