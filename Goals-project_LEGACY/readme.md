@@ -47,6 +47,9 @@
 
     eksctl  create  iamidentitymapping  --cluster  test  --region=ap-south-1  --arn  arn:aws:iam::137440810107:user/test01  --group  system:masters  --no-duplicate-arns
 
+
+    test
+
 ## to add cluster to the context
 
     aws  eks  --region  ap-south-1  update-kubeconfig  --name  test-eks-01
