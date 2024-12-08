@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: client
-        image: aakkiiff/goals_project_frontend:6
+        image: aakkiiff/test:1fe
         resources:
           limits:
             memory: "128Mi"

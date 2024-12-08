@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: backend-conatiner
-        image: devopsaes/cc:1
+        image: aakkiiff/test:1be
         resources:
           limits:
             memory: "128Mi"
