@@ -12,13 +12,37 @@ spec:
         app: server
     spec:
       containers:
-      - name: server
-        image: aaakkiiff/goals_project_backend:6
-
+      - name: backend-conatiner
+        image: devopsaes/cc:1
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
         ports:
         - containerPort: 5000
-
-
+        volumeMounts:
+          - mountPath: /app/logs/
+            name: access-log-volume
+        env:
+          - name: DATABASE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: database-secret
+                key: password
+          - name: DATABASE_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: database-secret
+                key: username
+          - name: DATABASE_URL
+            valueFrom:
+              configMapKeyRef:
+                name: cluster-url
+                key: database
+      volumes:
+        - name: access-log-volume
+          persistentVolumeClaim:
+            claimName: backend-log-persistance
 
 ---
 

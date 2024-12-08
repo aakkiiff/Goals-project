@@ -14,7 +14,10 @@ spec:
       containers:
       - name: client
         image: aakkiiff/goals_project_frontend:6
-
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
         ports:
         - containerPort: 3000
 
@@ -33,3 +36,4 @@ spec:
   ports:
   - port: 3000
     targetPort: 3000
+---
