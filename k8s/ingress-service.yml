@@ -11,14 +11,14 @@
         - http:
             paths:
               - path: /?(.*)
-                pathType: Prefix
+                pathType: ImplementationSpecific
                 backend:
                   service:
                     name: client-clusterip
                     port:
                       number: 3000
               - path: /api/?(.*)
-                pathType: Prefix
+                pathType: ImplementationSpecific
                 backend:
                   service:
                     name: server-clusterip

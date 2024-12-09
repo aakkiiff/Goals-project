@@ -43,10 +43,7 @@ spec:
         - name: access-log-volume
           persistentVolumeClaim:
             claimName: backend-log-persistance
-
 ---
-
-
 apiVersion: v1
 kind: Service
 metadata:
