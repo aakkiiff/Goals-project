@@ -1,11 +1,12 @@
-kind: PersistentVolumeClaim
+---
 apiVersion: v1
+kind: PersistentVolumeClaim
 metadata:
   name: backend-log-persistance
 spec:
-  storageClassName: nfs-client
   accessModes:
     - ReadWriteMany
   resources:
     requests:
-      storage: 100Mi
+      storage: 1Gi
+  storageClassName: ebs-sc
