@@ -2,7 +2,7 @@ apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
 metadata:
-  name: goals-cluster
+  name: goals-cluster1
   region: ap-south-1
   version: "1.31"
 
