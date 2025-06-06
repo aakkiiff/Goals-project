@@ -19,7 +19,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 34,
+  "id": 38,
   "links": [],
   "panels": [
     {
@@ -1117,5 +1117,5 @@
   "timezone": "browser",
   "title": "Resource Usage",
   "uid": "dc4e3436-a9b8-4cd6-9d7d-4077eba830c9",
-  "version": 34
+  "version": 1
 }
