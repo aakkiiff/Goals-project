@@ -61,3 +61,10 @@ count(kube_pod_info)
 sudo apt install stress
 stress --vm 1 --vm-bytes 1G --vm-keep
 
+
+
+
+
+((node_memory_MemTotal_bytes{instance="$server"} - node_memory_MemFree_bytes{instance="$server"}) / node_memory_MemTotal_bytes{instance="$server"}) * 100
+
+((node_memory_MemTotal_bytes{instance="$server"} - node_memory_MemFree_bytes{instance="$server"}  - node_memory_Buffers_bytes{instance="$server"} - node_memory_Cached_bytes{instance="$server"}) / node_memory_MemTotal_bytes{instance="$server"}) * 100
