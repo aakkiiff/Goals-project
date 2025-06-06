@@ -20,9 +20,9 @@ spec:
             cpu: "500m"
         ports:
         - containerPort: 5000
-        volumeMounts:
-          - mountPath: /app/logs/
-            name: access-log-volume
+        # volumeMounts:
+        #   - mountPath: /app/logs/
+        #     name: access-log-volume
         env:
           - name: DATABASE_PASSWORD
             valueFrom:
@@ -39,10 +39,10 @@ spec:
               configMapKeyRef:
                 name: cluster-url
                 key: database
-      volumes:
-        - name: access-log-volume
-          persistentVolumeClaim:
-            claimName: backend-log-persistance
+      # volumes:
+      #   - name: access-log-volume
+      #     persistentVolumeClaim:
+      #       claimName: backend-log-persistance
 ---
 apiVersion: v1
 kind: Service
