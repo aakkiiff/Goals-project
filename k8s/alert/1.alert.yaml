@@ -17,8 +17,8 @@ spec:
         name: akif
         severity: critical
       annotations:
-        summary: Kubernetes Pod not healthy (instance {{ $labels.instance }})
-        description: "Pod {{ $labels.namespace }}/{{ $labels.pod }} has been in a non-running state for longer than 15 minutes.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"      
+        summary: Kubernetes Pod {{ $labels.pod }} not healthy 
+        description: "Pod {{ $labels.namespace }}/{{ $labels.pod }} has been in a non-running state for longer than 15 minutes.\n"      
     - alert: KubernetesDaemonsetRolloutStuck
       expr: kube_daemonset_status_number_ready / kube_daemonset_status_desired_number_scheduled * 100 < 100 or kube_daemonset_status_desired_number_scheduled - kube_daemonset_status_current_number_scheduled > 0
       for: 10m
