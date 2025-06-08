@@ -519,21 +519,22 @@ alertmanager:
       group_wait: 10s
       group_interval: 11s
       repeat_interval: 1m
-      receiver: nullll
+      receiver: void
       routes:
       - receiver: slack-notifications
         match:
           name: akif
     
     receivers:
-    - name: nullll
+    - name: void
     - name: slack-notifications
       slack_configs:
       - channel: "#demo"
         send_resolved: true
-        api_url: 'https://hooks.slack.com/services/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'
-        title: "{{ range .Alerts }}{{ .Annotations.summary }}\n{{ end }}"
+        api_url: 'https://hooks.slack.com/services/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'
+        title: "{{ range .Alerts }}[{{ .Status | toUpper }}] {{ .Labels.alertname }}\n{{ end }}"
         text: "{{ range .Alerts }}{{ .Annotations.description }}\n{{ end }}"
+
         # title: "[Alert] {{ .GroupLabels.alertname }}"
         # text: "{{ range .Alerts }}<!channel> {{ .Annotations.summary }}\n{{ .Annotations.description }}\n{{ end }}"
 
