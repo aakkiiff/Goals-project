@@ -5,6 +5,6 @@ metadata:
 spec:
   containers:
   - name: nginx
-    image: nginx:latest  # change to nginx:lates3 if that's intentional
+    image: nginx:latedst  # change to nginx:lates3 if that's intentional
     ports:
     - containerPort: 80
