@@ -509,29 +509,31 @@ alertmanager:
   config:
 
     global:
-      resolve_timeout: 1m
+      resolve_timeout: 10s
     route:
       group_by:
-      - cluster
       - alertname
       - serverity
-      - namespace
-      group_wait: 30s
-      group_interval: 1m
-      repeat_interval: 12h
-      receiver: slack-notifications
+    
+      
+      group_wait: 10s
+      group_interval: 11s
+      repeat_interval: 1m
+      receiver: nullll
       routes:
       - receiver: slack-notifications
         match:
-          severity: critical
+          name: akif
+    
     receivers:
+    - name: nullll
     - name: slack-notifications
       slack_configs:
       - channel: "#demo"
         send_resolved: true
-        api_url: 'https://hooks.slack.com/services/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'
+        api_url: 'https://hooks.slack.com/services/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'
         title: "[Alert] {{ .GroupLabels.alertname }}"
-        text: "{{ range .Alerts }}{{ .Annotations.message }}\n{{ end }}"
+        text: "{{ range .Alerts }}<!channel> {{ .Annotations.summary }}\n{{ .Annotations.description }}\n{{ end }}"
 
   ## Alertmanager configuration directives (as string type, preferred over the config hash map)
   ## stringConfig will be used only, if tplConfig is true
