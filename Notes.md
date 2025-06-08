@@ -1,70 +1,75 @@
-https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
+- https://medium.com/@muppedaanvesh/a-hands-on-guide-setting-up-prometheus-and-alertmanager-in-kubernetes-with-custom-alerts-%EF%B8%8F-f9c6d37b27ca
 
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-helm repo update
+- pod monitor/ service monitoryu
 
-helm install test1 prometheus-community/kube-prometheus-stack \
+```
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    app: kube-prometheus-stack
+    app.kubernetes.io/instance: kube-prometheus-stack
+    release: kube-prometheus-stack
+  name: kube-pod-not-ready
+spec:
+  groups:
+  - name: my-pod-demo-rules
+    rules:
+    - alert: KubernetesPodNotHealthy
+      expr: sum by (namespace, pod) (kube_pod_status_phase{phase=~"Pending|Unknown|Failed"}) > 0
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: Kubernetes Pod not healthy (instance {{ $labels.instance }})
+        description: "Pod {{ $labels.namespace }}/{{ $labels.pod }} has been in a non-running state for longer than 15 minutes.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"      
+    - alert: KubernetesDaemonsetRolloutStuck
+      expr: kube_daemonset_status_number_ready / kube_daemonset_status_desired_number_scheduled * 100 < 100 or kube_daemonset_status_desired_number_scheduled - kube_daemonset_status_current_number_scheduled > 0
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: Kubernetes DaemonSet rollout stuck (instance {{ $labels.instance }})
+        description: "Some Pods of DaemonSet {{ $labels.namespace }}/{{ $labels.daemonset }} are not scheduled or not ready\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+    - alert: ContainerHighCpuUtilization
+      expr: (sum(rate(container_cpu_usage_seconds_total{container!=""}[5m])) by (pod, container) / sum(container_spec_cpu_quota{container!=""}/container_spec_cpu_period{container!=""}) by (pod, container) * 100) > 80
+      for: 2m
+      labels:
+        severity: warning
+      annotations:
+        summary: Container High CPU utilization (instance {{ $labels.instance }})
+        description: "Container CPU utilization is above 80%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+    - alert: ContainerHighMemoryUsage
+      expr: (sum(container_memory_working_set_bytes{name!=""}) BY (instance, name) / sum(container_spec_memory_limit_bytes > 0) BY (instance, name) * 100) > 80
+      for: 2m
+      labels:
+        severity: warning
+      annotations:
+        summary: Container High Memory usage (instance {{ $labels.instance }})
+        description: "Container Memory usage is above 80%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+    - alert: KubernetesContainerOomKiller
+      expr: (kube_pod_container_status_restarts_total - kube_pod_container_status_restarts_total offset 10m >= 1) and ignoring (reason) min_over_time(kube_pod_container_status_last_terminated_reason{reason="OOMKilled"}[10m]) == 1
+      for: 0m
+      labels:
+        severity: warning
+      annotations:
+        summary: Kubernetes Container oom killer (instance {{ $labels.instance }})
+        description: "Container {{ $labels.container }} in pod {{ $labels.namespace }}/{{ $labels.pod }} has been OOMKilled {{ $value }} times in the last 10 minutes.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+    - alert: KubernetesPodCrashLooping
+      expr: increase(kube_pod_container_status_restarts_total[1m]) > 3
+      for: 2m
+      labels:
+        severity: warning
+      annotations:
+        summary: Kubernetes pod crash looping (instance {{ $labels.instance }})
+        description: "Pod {{ $labels.namespace }}/{{ $labels.pod }} is crash looping\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+```
+
+
+helm upgrade test1 prometheus-community/kube-prometheus-stack \
   --namespace monitor \
-  --create-namespace \
   --values values.yaml
 
----------------------------------------------------------------------------------
-
-#grafana
-# memory usage
-> 
-100 * (1 - avg(node_memory_MemAvailable_bytes) by (instance) / avg(node_memory_MemTotal_bytes) by (instance))
-
-> 
-label_replace(
-  100 * (1 - avg(node_memory_MemAvailable_bytes) by (instance) / avg(node_memory_MemTotal_bytes) by (instance))
-  * on(instance) group_left(nodename) node_uname_info,
-  "instance", "", "instance", ".*"
-)
-
-
-# cpu usage
-> 
-  100 - (avg by (instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)
-
->
-
-label_replace(
-  (100 - (avg by (instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100))
-  * on(instance) group_left(nodename) node_uname_info,
-  "instance", "", "instance", ".*"
-)
-
-label_replace(
-  (100 - (avg by (instance) (irate(node_cpu_seconds_total{mode="idle"}[$__rate_interval])) * 100))
-  * on(instance) group_left(nodename) node_uname_info,
-  "instance", "", "instance", ".*"
-)
-
-# storage usage
-label_replace(
-  100 * (
-    sum by (instance) (node_filesystem_size_bytes{device!="rootfs"})
-    - sum by (instance) (node_filesystem_free_bytes{device!="rootfs"})
-  ) / sum by (instance) (node_filesystem_size_bytes{device!="rootfs"})
-  * on(instance) group_left(nodename) node_uname_info,
-  "instance", "", "", ""
-)
-
-## overall
-count(kube_node_info)
-count(kube_namespace_status_phase{phase="Active"})
-count(kube_pod_info)
-
-
-## check ram usage
-sudo apt install stress
-stress --vm 1 --vm-bytes 1G --vm-keep
 
 
 
-
-
-((node_memory_MemTotal_bytes{instance="$server"} - node_memory_MemFree_bytes{instance="$server"}) / node_memory_MemTotal_bytes{instance="$server"}) * 100
-
-((node_memory_MemTotal_bytes{instance="$server"} - node_memory_MemFree_bytes{instance="$server"}  - node_memory_Buffers_bytes{instance="$server"} - node_memory_Cached_bytes{instance="$server"}) / node_memory_MemTotal_bytes{instance="$server"}) * 100

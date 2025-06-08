@@ -519,7 +519,7 @@ alertmanager:
     routes:
       - receiver: 'slack-notifications'
         matchers:
-          - alertname = "kube-pod-not-ready"
+          - alertname = "Watchdog"
 
     route:
       group_by: ['namespace', 'alertname', 'severity']
@@ -530,8 +530,17 @@ alertmanager:
       routes:
       - receiver: 'slack-notifications'
         matchers:
-          - alertname = "kube-pod-not-ready"
+          - alertname = "Watchdog"
   receivers:
+  - name: 'slack-notifications'
+    slack_configs:
+      - api_url: 'https://hooks.slack.com/services/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'
+        channel: '#demo'
+        icon_emoji: ':warning:'
+        send_resolved: true
+        title: 'test'
+        text: "test"
+
   - name: 'slack-notifications'
     slack_configs:
       - api_url: 'https://hooks.slack.com/services/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'
