@@ -30,7 +30,7 @@ spec:
 
 
     - alert: ContainerHighCpuUtilization
-      expr: (sum(rate(container_cpu_usage_seconds_total{container!=""}[1m])) by (pod, container) / sum(container_spec_cpu_quota{container!=""}/container_spec_cpu_period{container!=""}) by (pod, container) * 100) > 60
+      expr: (sum by (pod) (rate(container_cpu_usage_seconds_total{container!=""}[1m]))/sum(cluster:namespace:pod_cpu:active:kube_pod_container_resource_limits) by (pod)) * 100 > 80
       for: 30s
       labels:
         severity: warning
