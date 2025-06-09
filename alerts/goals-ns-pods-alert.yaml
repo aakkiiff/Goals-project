@@ -13,7 +13,7 @@ spec:
       expr: sum by (namespace, pod) (kube_pod_status_phase{phase=~"Pending|Unknown|Failed"}) > 0
       for: 20s # adjust the duration as needed
       labels:
-        name: akif
+        project: goals
         severity: critical
       annotations:
         summary: Kubernetes Pod {{ $labels.pod }} not healthy 
@@ -23,6 +23,7 @@ spec:
       expr: increase(kube_pod_container_status_restarts_total[1m]) > 3
       for: 20s  #adjust the duration as needed
       labels:
+        project: goals  
         severity: critical
       annotations:
         summary: Kubernetes pod {{ $labels.pod }} crash looping
@@ -33,24 +34,27 @@ spec:
       expr: (sum by (pod) (rate(container_cpu_usage_seconds_total{container!=""}[1m]))/sum(cluster:namespace:pod_cpu:active:kube_pod_container_resource_limits) by (pod)) * 100 > 80
       for: 30s
       labels:
+        project: goals
         severity: warning
       annotations:
         summary: Container High CPU utilization
-        description: "Container CPU utilization is above 80%\n"
+        description: "Container {{ $labels.namespace }}/{{ $labels.pod }} CPU utilization is above 80%\n"
 
     - alert: ContainerHighMemoryUsage
       expr: (sum(container_memory_working_set_bytes{name!=""}) BY (instance, name) / sum(container_spec_memory_limit_bytes > 0) BY (instance, name) * 100) > 80
       for: 30s
       labels:
+        project: goals
         severity: warning
       annotations:
         summary: Container High Memory usage
-        description: "Container Memory usage is above 80%\n"
+        description: "Container {{ $labels.namespace }}/{{ $labels.pod }} Memory usage is above 80%\n"
 
     - alert: KubernetesContainerOomKiller
       expr: (kube_pod_container_status_restarts_total - kube_pod_container_status_restarts_total offset 10m >= 1) and ignoring (reason) min_over_time(kube_pod_container_status_last_terminated_reason{reason="OOMKilled"}[10m]) == 1
       for: 0m
       labels:
+        project: goals
         severity: critical
       annotations:
         summary: Kubernetes Container oom killer

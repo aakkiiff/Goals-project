@@ -523,7 +523,7 @@ alertmanager:
       routes:
       - receiver: slack-notifications
         match:
-          name: akif
+          project: goals
     
     receivers:
     - name: void
