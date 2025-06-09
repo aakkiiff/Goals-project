@@ -11,17 +11,18 @@ spec:
     rules:
     - alert: KubernetesPodNotHealthy
       expr: sum by (namespace, pod) (kube_pod_status_phase{phase=~"Pending|Unknown|Failed"}) > 0
-      for: 20s # adjust the duration as needed
+      for: 1m # adjust the duration as needed
       labels:
         project: goals
         severity: critical
       annotations:
         summary: Kubernetes Pod {{ $labels.pod }} not healthy 
-        description: "Pod {{ $labels.namespace }}/{{ $labels.pod }} has been in a non-running state for longer than 15 minutes.\n"     
+        description: "Pod {{ $labels.namespace }}/{{ $labels.pod }} has been in a non-running state for longer than 1 minute.\n"     
 
+    # kubectl create deployment crashloop-ubuntu --image=ubuntu -- /bin/sh -c "echo 'Crashing now...' && exit 1"
     - alert: KubernetesPodCrashLooping
-      expr: increase(kube_pod_container_status_restarts_total[1m]) > 3
-      for: 20s  #adjust the duration as needed
+      expr: increase(kube_pod_container_status_restarts_total[5m]) > 2
+      for: 1m  #adjust the duration as needed
       labels:
         project: goals  
         severity: critical
@@ -32,7 +33,7 @@ spec:
 
     - alert: ContainerHighCpuUtilization
       expr: (sum by (pod) (rate(container_cpu_usage_seconds_total{container!=""}[1m]))/sum(cluster:namespace:pod_cpu:active:kube_pod_container_resource_limits) by (pod)) * 100 > 80
-      for: 30s
+      for: 1m
       labels:
         project: goals
         severity: warning
@@ -41,15 +42,15 @@ spec:
         description: "Container {{ $labels.namespace }}/{{ $labels.pod }} CPU utilization is above 80%\n"
 
     - alert: ContainerHighMemoryUsage
-      expr: (sum by (namespace, pod) (container_memory_working_set_bytes{container!=""}) / sum by (namespace, pod) (cluster:namespace:pod_memory:active:kube_pod_container_resource_limits{container!=""})) * 100 > 20
-      for: 30s
+      expr: (sum by (namespace, pod) (container_memory_working_set_bytes{container!=""}) / sum by (namespace, pod) (cluster:namespace:pod_memory:active:kube_pod_container_resource_limits{container!=""})) * 100 > 80
+      for: 1m
       labels:
         project: goals
         severity: warning
       annotations:
         summary: Container High Memory usage
         description: "Container {{ $labels.namespace }}/{{ $labels.pod }} Memory usage is above 80%\n"
-
+# dont know
     - alert: KubernetesContainerOomKiller
       expr: (kube_pod_container_status_restarts_total - kube_pod_container_status_restarts_total offset 10m >= 1) and ignoring (reason) min_over_time(kube_pod_container_status_last_terminated_reason{reason="OOMKilled"}[10m]) == 1
       for: 0m
