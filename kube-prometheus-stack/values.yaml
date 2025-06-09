@@ -515,11 +515,17 @@ alertmanager:
       - alertname
       - serverity
     
-      
-      group_wait: 10s
-      group_interval: 11s
-      repeat_interval: 1m
-      receiver: void
+      # When the first alert in a group fires, wait 10s before sending.
+      # Useful to allow time for more related alerts to collect and go out as one message.
+      group_wait: 30s
+      # After the first alert in a group fires, wait 5 minutes before sending any further alerts in that group.
+      group_interval: 5m
+      # Re-send the same alert every 1 hour if it’s still firing.
+      repeat_interval: 1h
+      # The default receiver is void
+      receiver: void 
+
+      # sub routing for the PrometheusRule.groups having labels project: goals
       routes:
       - receiver: slack-notifications
         match:
