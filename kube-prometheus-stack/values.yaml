@@ -531,7 +531,7 @@ alertmanager:
       slack_configs:
       - channel: "#demo"
         send_resolved: true
-        api_url: 'https://hooks.slack.com/services/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'
+        api_url: 'https://hooks.slack.com/services/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'   
         title: "{{ range .Alerts }}[{{ .Status | toUpper }}] {{ .Labels.alertname }}\n{{ end }}"
         text: "{{ range .Alerts }}{{ .Annotations.description }}\n{{ end }}"
 
