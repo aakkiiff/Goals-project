@@ -41,7 +41,7 @@ spec:
         description: "Container {{ $labels.namespace }}/{{ $labels.pod }} CPU utilization is above 80%\n"
 
     - alert: ContainerHighMemoryUsage
-      expr: (sum(container_memory_working_set_bytes{name!=""}) BY (instance, name) / sum(container_spec_memory_limit_bytes > 0) BY (instance, name) * 100) > 80
+      expr: (sum by (namespace, pod) (container_memory_working_set_bytes{container!=""}) / sum by (namespace, pod) (cluster:namespace:pod_memory:active:kube_pod_container_resource_limits{container!=""})) * 100 > 20
       for: 30s
       labels:
         project: goals
