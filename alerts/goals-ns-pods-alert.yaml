@@ -2,11 +2,9 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   labels:
-    # app: kube-prometheus-stack
-    # app.kubernetes.io/instance: kube-prometheus-stack
     release: test1 # change to your release name, must match the release name of your Prometheus operator
   name: kube-pod-not-ready
-  namespace: goals-ns
+  namespace: goals-ns   #important: must match the namespace where you want alerting
 spec:
   groups:
   - name: goals-pods-alerts
@@ -32,16 +30,17 @@ spec:
 
 
     - alert: ContainerHighCpuUtilization
-      expr: (sum(rate(container_cpu_usage_seconds_total{container!=""}[5m])) by (pod, container) / sum(container_spec_cpu_quota{container!=""}/container_spec_cpu_period{container!=""}) by (pod, container) * 100) > 80
-      for: 2m
+      expr: (sum(rate(container_cpu_usage_seconds_total{container!=""}[1m])) by (pod, container) / sum(container_spec_cpu_quota{container!=""}/container_spec_cpu_period{container!=""}) by (pod, container) * 100) > 60
+      for: 30s
       labels:
         severity: warning
       annotations:
         summary: Container High CPU utilization
         description: "Container CPU utilization is above 80%\n"
+
     - alert: ContainerHighMemoryUsage
       expr: (sum(container_memory_working_set_bytes{name!=""}) BY (instance, name) / sum(container_spec_memory_limit_bytes > 0) BY (instance, name) * 100) > 80
-      for: 2m
+      for: 30s
       labels:
         severity: warning
       annotations:
