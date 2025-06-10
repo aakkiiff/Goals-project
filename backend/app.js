@@ -26,6 +26,59 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get('/goals/400', (req, res) => {
+  const errors = [
+    { code: 400, message: 'Bad Request' },
+    { code: 401, message: 'Unauthorized' },
+    { code: 403, message: 'Forbidden' },
+    { code: 404, message: 'Not Found' },
+  ];
+
+  // Pick a random error from the list
+  const randomError = errors[Math.floor(Math.random() * errors.length)];
+
+  console.log(`[GET] [ERROR] Responding with ${randomError.code} - ${randomError.message}`);
+
+  res.status(randomError.code).json({
+    status: 'error',
+    message: randomError.message,
+    code: randomError.code,
+  });
+});
+
+app.get('/goals/300', (req, res) => {
+  const errors = [
+    { code: 300, message: 'Multiple Choices' },
+    { code: 301, message: 'Moved Permanently' },
+    { code: 302, message: 'Found' },
+    { code: 303, message: 'See Other' },
+    { code: 304, message: 'Not Modified' },
+    { code: 305, message: 'Use Proxy' },
+    { code: 307, message: 'Temporary Redirect' },
+    { code: 308, message: 'Permanent Redirect' },
+  ];
+  const randomError = errors[Math.floor(Math.random() * errors.length)];
+
+  console.log(`[GET] [ERROR] Responding with ${randomError.code} - ${randomError.message}`);
+
+  // // For most 3xx codes, a Location header is recommended (except 304)
+  // if ([301, 302, 303, 305, 307, 308].includes(randomRedirect.code)) {
+  //   res.set('Location', '/');
+  // }
+  // Disable client caching
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+  res.set('Surrogate-Control', 'no-store');
+
+  res.status(randomError.code).json({
+    status: 'error',
+    message: randomError.message,
+    code: randomError.code,
+  });
+});
+
+
 app.get('/goals', async (req, res) => {
   console.log('TRYING TO FETCH GOALS');
   try {
@@ -84,7 +137,7 @@ app.delete('/goals/:id', async (req, res) => {
 });
 
 mongoose.connect(
-  `mongodb+srv://${process.env.DATABASE_USERNAME}:${process.env.DATABASE_PASSWORD}@${process.env.DATABASE_URL}`,
+  `mongodb+srv://akif:akif@cluster1.uktxj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster1`,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
