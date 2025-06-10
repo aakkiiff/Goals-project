@@ -14,7 +14,7 @@ function App() {
       setIsLoading(true);
 
       try {
-        const response = await fetch('/api/goals/');
+        const response = await fetch('http://localhost:5000/goals/');
 
         const resData = await response.json();
 
@@ -39,7 +39,7 @@ function App() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/goals/', {
+      const response = await fetch('http://localhost:5000/goals/', {
         method: 'POST',
         body: JSON.stringify({
           text: goalText,
@@ -78,7 +78,7 @@ function App() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/goals/' + goalId, {
+      const response = await fetch('http://localhost:5000/goals/' + goalId, {
         method: 'DELETE',
       });
 
@@ -101,8 +101,81 @@ function App() {
     setIsLoading(false);
   }
 
+  // New function to test 3xx or 4xx endpoints
+  async function testErrorEndpoint(endpoint) {
+    setError(null);  // clear previous error
+    setIsLoading(true);
+    try {
+      const response = await fetch(`http://localhost:5000/goals/${endpoint}`);
+      const resData = await response.json();
+
+      if (!response.ok) {
+        // Show server error message if any
+        throw new Error(resData.message || `Request to /goals/${endpoint} failed.`);
+      } else {
+        // Show success or redirect message from server
+        setError(`Response ${response.status}: ${resData.message || 'Success'}`);
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+    setIsLoading(false);
+  }
+
   return (
     <div>
+      {/* Buttons to test 3xx and 4xx */}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '1.5rem',
+          margin: '1.5rem 0',
+        }}
+      >
+        <button
+          onClick={() => testErrorEndpoint('300')}
+          disabled={isLoading}
+          style={{
+            padding: '0.6rem 1.4rem',
+            fontSize: '1rem',
+            fontWeight: '600',
+            color: '#fff',
+            backgroundColor: '#007bff',
+            border: 'none',
+            borderRadius: '6px',
+            cursor: isLoading ? 'not-allowed' : 'pointer',
+            boxShadow: '0 4px 8px rgb(0 123 255 / 0.3)',
+            transition: 'background-color 0.3s ease',
+          }}
+          onMouseEnter={(e) => !isLoading && (e.target.style.backgroundColor = '#0056b3')}
+          onMouseLeave={(e) => !isLoading && (e.target.style.backgroundColor = '#007bff')}
+        >
+          Test 3xx Error
+        </button>
+
+        <button
+          onClick={() => testErrorEndpoint('400')}
+          disabled={isLoading}
+          style={{
+            padding: '0.6rem 1.4rem',
+            fontSize: '1rem',
+            fontWeight: '600',
+            color: '#fff',
+            backgroundColor: '#dc3545',
+            border: 'none',
+            borderRadius: '6px',
+            cursor: isLoading ? 'not-allowed' : 'pointer',
+            boxShadow: '0 4px 8px rgb(220 53 69 / 0.3)',
+            transition: 'background-color 0.3s ease',
+          }}
+          onMouseEnter={(e) => !isLoading && (e.target.style.backgroundColor = '#a71d2a')}
+          onMouseLeave={(e) => !isLoading && (e.target.style.backgroundColor = '#dc3545')}
+        >
+          Test 4xx Error
+        </button>
+      </div>
+
       {error && <ErrorAlert errorText={error} />}
       <GoalInput onAddGoal={addGoalHandler} />
       {!isLoading && (
