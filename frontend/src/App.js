@@ -14,7 +14,7 @@ function App() {
       setIsLoading(true);
 
       try {
-        const response = await fetch('/api/goals');
+        const response = await fetch('/api/goals/');
 
         const resData = await response.json();
 
@@ -39,7 +39,7 @@ function App() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/goals', {
+      const response = await fetch('/api/goals/', {
         method: 'POST',
         body: JSON.stringify({
           text: goalText,
@@ -78,7 +78,7 @@ function App() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/goals' + goalId, {
+      const response = await fetch('/api/goals/' + goalId, {
         method: 'DELETE',
       });
 
@@ -106,7 +106,7 @@ function App() {
     setError(null);  // clear previous error
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/goals${endpoint}`);
+      const response = await fetch(`/api/goals/${endpoint}`);
       const resData = await response.json();
 
       if (!response.ok) {
