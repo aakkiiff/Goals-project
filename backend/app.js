@@ -26,74 +26,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/api/goals/400", (req, res) => {
-  const errors = [
-    { code: 400, message: "Bad Request" },
-    { code: 401, message: "Unauthorized" },
-    { code: 403, message: "Forbidden" },
-    { code: 404, message: "Not Found" },
-  ];
 
-  // Pick a random error from the list
-  const randomError = errors[Math.floor(Math.random() * errors.length)];
 
-  console.log(
-    JSON.stringify({
-      level: "error",
-      method: req.method,
-      path: req.originalUrl,
-      status: randomError.code,
-      message: randomError.message,
-    })
-  );
-
-  res.status(randomError.code).json({
-    status: "error",
-    message: randomError.message,
-    code: randomError.code,
-  });
-});
-
-app.get("/api/goals/300", (req, res) => {
-  const errors = [
-    { code: 300, message: "Multiple Choices" },
-    { code: 301, message: "Moved Permanently" },
-    { code: 302, message: "Found" },
-    { code: 303, message: "See Other" },
-    { code: 304, message: "Not Modified" },
-    { code: 305, message: "Use Proxy" },
-    { code: 307, message: "Temporary Redirect" },
-    { code: 308, message: "Permanent Redirect" },
-  ];
-  const randomError = errors[Math.floor(Math.random() * errors.length)];
-
-  console.log(
-    JSON.stringify({
-      level: "error",
-      method: req.method,
-      path: req.originalUrl,
-      status: randomError.code,
-      message: randomError.message,
-    })
-  );
-
-  // Disable client caching
-  res.set(
-    "Cache-Control",
-    "no-store, no-cache, must-revalidate, proxy-revalidate"
-  );
-  res.set("Pragma", "no-cache");
-  res.set("Expires", "0");
-  res.set("Surrogate-Control", "no-store");
-
-  res.status(randomError.code).json({
-    status: "error",
-    message: randomError.message,
-    code: randomError.code,
-  });
-});
-
-app.get("/api/goals", async (req, res) => {
+app.get("/goals", async (req, res) => {
   try {
     const goals = await Goal.find();
     res.status(200).json({
@@ -126,7 +61,7 @@ app.get("/api/goals", async (req, res) => {
   }
 });
 
-app.post("/api/goals", async (req, res) => {
+app.post("/goals", async (req, res) => {
   const goalText = req.body.text;
 
   if (!goalText || goalText.trim().length === 0) {
@@ -176,7 +111,7 @@ app.post("/api/goals", async (req, res) => {
   }
 });
 
-app.delete("/api/goals/:id", async (req, res) => {
+app.delete("/goals/:id", async (req, res) => {
   try {
     await Goal.deleteOne({ _id: req.params.id });
     res.status(200).json({ message: "Deleted goal!" });
@@ -205,6 +140,72 @@ app.delete("/api/goals/:id", async (req, res) => {
   }
 });
 
+app.get("/goals/400", (req, res) => {
+  const errors = [
+    { code: 400, message: "Bad Request" },
+    { code: 401, message: "Unauthorized" },
+    { code: 403, message: "Forbidden" },
+    { code: 404, message: "Not Found" },
+  ];
+
+  // Pick a random error from the list
+  const randomError = errors[Math.floor(Math.random() * errors.length)];
+
+  console.log(
+    JSON.stringify({
+      level: "error",
+      method: req.method,
+      path: req.originalUrl,
+      status: randomError.code,
+      message: randomError.message,
+    })
+  );
+
+  res.status(randomError.code).json({
+    status: "error",
+    message: randomError.message,
+    code: randomError.code,
+  });
+});
+
+app.get("/goals/300", (req, res) => {
+  const errors = [
+    { code: 300, message: "Multiple Choices" },
+    { code: 301, message: "Moved Permanently" },
+    { code: 302, message: "Found" },
+    { code: 303, message: "See Other" },
+    { code: 304, message: "Not Modified" },
+    { code: 305, message: "Use Proxy" },
+    { code: 307, message: "Temporary Redirect" },
+    { code: 308, message: "Permanent Redirect" },
+  ];
+  const randomError = errors[Math.floor(Math.random() * errors.length)];
+
+  console.log(
+    JSON.stringify({
+      level: "error",
+      method: req.method,
+      path: req.originalUrl,
+      status: randomError.code,
+      message: randomError.message,
+    })
+  );
+
+  // Disable client caching
+  res.set(
+    "Cache-Control",
+    "no-store, no-cache, must-revalidate, proxy-revalidate"
+  );
+  res.set("Pragma", "no-cache");
+  res.set("Expires", "0");
+  res.set("Surrogate-Control", "no-store");
+
+  res.status(randomError.code).json({
+    status: "error",
+    message: randomError.message,
+    code: randomError.code,
+  });
+});
 mongoose.connect(
   `mongodb+srv://akif:akif@cluster1.uktxj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster1`,
   {
