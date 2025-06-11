@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: backend-conatiner
-        image: aakkiiff/test:1be
+        image: aakkiiff/goalsbe:log-2.0
         resources:
           requests:
             memory: "64Mi"

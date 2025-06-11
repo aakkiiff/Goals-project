@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: client
-        image: aakkiiff/test:1fe
+        image: aakkiiff/goalsfe:log-1.0
         resources:
           requests:
             memory: "64Mi"
