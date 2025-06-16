@@ -1,0 +1,64 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: promtail
+  namespace: lp
+  annotations:
+    meta.helm.sh/release-name: promtail
+    meta.helm.sh/release-namespace: lp
+  labels:
+    app.kubernetes.io/instance: promtail
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: promtail
+    app.kubernetes.io/version: 3.5.1
+    helm.sh/chart: promtail-6.17.0
+
+data:
+  promtail.yaml: |
+    server:
+      log_level: info
+      log_format: logfmt
+      http_listen_port: 3101
+
+    clients:
+      - url: http://loki-loki-distributed-gateway/loki/api/v1/push
+
+    positions:
+      filename: /run/promtail/positions.yaml
+
+    scrape_configs:
+      - job_name: kubernetes-pods
+        pipeline_stages:
+          - json:
+              expressions:
+                level: level
+                method: method
+                path: path
+                status: status
+                message: message
+          - labels:
+              status: status  # This maps the extracted 'status' field to a label
+              level: level     # This maps the extracted 'level' field to a label
+        kubernetes_sd_configs:
+          - role: pod
+        relabel_configs:
+          - action: replace
+            source_labels:
+              - __meta_kubernetes_pod_name
+            target_label: pod
+          - action: replace
+            replacement: /var/log/pods/*$1/*.log
+            separator: /
+            source_labels:
+              - __meta_kubernetes_pod_uid
+              - __meta_kubernetes_pod_container_name
+            target_label: __path__
+          - action: replace
+            regex: true/(.*)
+            replacement: /var/log/pods/*$1/*.log
+            separator: /
+            source_labels:
+              - __meta_kubernetes_pod_annotationpresent_kubernetes_io_config_hash
+              - __meta_kubernetes_pod_annotation_kubernetes_io_config_hash
+              - __meta_kubernetes_pod_container_name
+            target_label: __path__
