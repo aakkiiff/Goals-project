@@ -13,3 +13,14 @@ http://loki-loki-distributed-query-frontend.lp:3100
 count_over_time({pod="server-deployment-79d6ddf455-74bkh"} | logfmt --strict | status="403" [5m])
 count_over_time({pod="server-deployment-79d6ddf455-74bkh"} | logfmt | method="GET" [$__interval])
 
+sum by (status) (
+  count_over_time(
+    {app="server", method="GET"}[$__range]
+  )
+)
+
+sum by (status) (
+  count_over_time(
+    {app="server"}[$__range]
+  )
+)
