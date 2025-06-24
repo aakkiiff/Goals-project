@@ -32,6 +32,19 @@ data:
             replacement: /var/log/pods/*$1/*.log
             target_label: __path__
 
+          - action: replace
+            source_labels:
+              - __meta_kubernetes_namespace
+            target_label: namespace
+          - source_labels:
+              - __meta_kubernetes_pod_label_app_kubernetes_io_name
+              - __meta_kubernetes_pod_label_app
+              - __tmp_controller_name
+              - __meta_kubernetes_pod_name
+            regex: ^;*([^;]+)(;.*)?$
+            action: replace
+            target_label: app
+            
         pipeline_stages:
           - logfmt:
               mapping:
