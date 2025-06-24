@@ -26,8 +26,6 @@ app.use((req, res, next) => {
   next();
 });
 
-
-
 app.get("/goals", async (req, res) => {
   try {
     const goals = await Goal.find();
@@ -39,24 +37,13 @@ app.get("/goals", async (req, res) => {
     });
 
     console.log(
-      JSON.stringify({
-        level: "info",
-        method: req.method,
-        path: req.originalUrl,
-        status: 200,
-        message: "FETCHED GOALS",
-      })
+      `level=info method=${req.method} path="${req.originalUrl}" status=200 message="FETCHED GOALS"`
     );
   } catch (err) {
     console.log(
-      JSON.stringify({
-        level: "error",
-        method: req.method,
-        path: req.originalUrl,
-        status: 500,
-        message: "ERROR FETCHING GOALS: " + err.message,
-      })
+      `level=error method=${req.method} path="${req.originalUrl}" status=500 message="ERROR FETCHING GOALS: ${err.message}"`
     );
+
     res.status(500).json({ message: "Failed to load goals." });
   }
 });
@@ -66,14 +53,9 @@ app.post("/goals", async (req, res) => {
 
   if (!goalText || goalText.trim().length === 0) {
     console.log(
-      JSON.stringify({
-        level: "warn",
-        method: req.method,
-        path: req.originalUrl,
-        status: 422,
-        message: "INVALID INPUT - NO TEXT",
-      })
+      `level=warn method=${req.method} path="${req.originalUrl}" status=422 message="INVALID INPUT - NO TEXT"`
     );
+
     return res.status(422).json({ message: "Invalid goal text." });
   }
 
@@ -88,23 +70,11 @@ app.post("/goals", async (req, res) => {
       .json({ message: "Goal saved", goal: { id: goal.id, text: goalText } });
 
     console.log(
-      JSON.stringify({
-        level: "info",
-        method: req.method,
-        path: req.originalUrl,
-        status: 201,
-        message: "STORED NEW GOAL",
-      })
+      `level=info method=${req.method} path="${req.originalUrl}" status=201 message="STORED NEW GOAL"`
     );
   } catch (err) {
     console.log(
-      JSON.stringify({
-        level: "error",
-        method: req.method,
-        path: req.originalUrl,
-        status: 500,
-        message: "ERROR STORING GOAL: " + err.message,
-      })
+      `level=error method=${req.method} path="${req.originalUrl}" status=500 message="ERROR STORING GOAL: ${err.message}"`
     );
 
     res.status(500).json({ message: "Failed to save goal." });
@@ -117,23 +87,11 @@ app.delete("/goals/:id", async (req, res) => {
     res.status(200).json({ message: "Deleted goal!" });
 
     console.log(
-      JSON.stringify({
-        level: "info",
-        method: req.method,
-        path: req.originalUrl,
-        status: 200,
-        message: "DELETED GOAL",
-      })
+      `level=info method=${req.method} path="${req.originalUrl}" status=200 message="DELETED GOAL"`
     );
   } catch (err) {
     console.log(
-      JSON.stringify({
-        level: "error",
-        method: req.method,
-        path: req.originalUrl,
-        status: 500,
-        message: "ERROR DELETING GOAL: " + err.message,
-      })
+      `level=error method=${req.method} path="${req.originalUrl}" status=500 message="ERROR DELETING GOAL: ${err.message}"`
     );
 
     res.status(500).json({ message: "Failed to delete goal." });
@@ -152,13 +110,7 @@ app.get("/goals/400", (req, res) => {
   const randomError = errors[Math.floor(Math.random() * errors.length)];
 
   console.log(
-    JSON.stringify({
-      level: "error",
-      method: req.method,
-      path: req.originalUrl,
-      status: randomError.code,
-      message: randomError.message,
-    })
+    `level=error method=${req.method} path=${req.originalUrl} status=${randomError.code} message="${randomError.message}"`
   );
 
   res.status(randomError.code).json({
@@ -182,13 +134,7 @@ app.get("/goals/300", (req, res) => {
   const randomError = errors[Math.floor(Math.random() * errors.length)];
 
   console.log(
-    JSON.stringify({
-      level: "error",
-      method: req.method,
-      path: req.originalUrl,
-      status: randomError.code,
-      message: randomError.message,
-    })
+    `level=error method=${req.method} path="${req.originalUrl}" status=${randomError.code} message="${randomError.message}"`
   );
 
   // Disable client caching
@@ -215,11 +161,13 @@ mongoose.connect(
   (err) => {
     if (err) {
       console.error(
-        "FAILED TO CONNECT TO MONGODB,did you added the mongodb url?"
+        `level=error message="FAILED TO CONNECT TO MONGODB, did you add the mongodb url?"`
       );
+
       console.error(err);
     } else {
-      console.log("CONNECTED TO MONGODB!!");
+      console.log(`level=info message="CONNECTED TO MONGODB!!"`);
+
       app.listen(5000);
     }
   }
