@@ -1,0 +1,130 @@
+{
+  "request": {
+    "url": "api/ds/query?ds_type=loki&requestId=SQR127_1",
+    "method": "POST",
+    "data": {
+      "queries": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "aepwybau8avwgf"
+          },
+          "direction": "backward",
+          "editorMode": "code",
+          "expr": "sum by (status) (\n  count_over_time(\n    {app=\"server\"}[$__range]\n  )\n)",
+          "legendFormat": "{{status}}",
+          "queryType": "range",
+          "refId": "A",
+          "maxLines": 1000,
+          "step": "",
+          "datasourceId": 3,
+          "intervalMs": 1000,
+          "maxDataPoints": 1473
+        }
+      ],
+      "from": "1750791219160",
+      "to": "1750793019160"
+    },
+    "hideFromInspector": false
+  },
+  "response": {
+    "results": {
+      "A": {
+        "error": "failed to load chunk 'ZmFrZS9hMTYwNGMzZjMxZTc3NGRkOjE5N2EzNDI0NWM0OjE5N2EzNDI0NWM1OjIxMWM0ZGZm': open /var/loki/chunks/ZmFrZS9hMTYwNGMzZjMxZTc3NGRkOjE5N2EzNDI0NWM0OjE5N2EzNDI0NWM1OjIxMWM0ZGZm: no such file or directory\n",
+        "errorSource": "downstream",
+        "status": 500,
+        "refId": "A"
+      }
+    }
+  }
+}
+
+
+when giving time range 30 min or more it is erroring
+
+When Loki complains that it “failed to load chunk … no such file or directory” only once you go beyond a 30 minute window, it almost always means that those older chunks have already been flushed/compacted or evicted from disk by your retention settings — so Grafana can’t find them locally anymore.
+
+What’s going on under the hood
+Chunk lifecycle. Loki writes incoming log lines into an in-memory “head” chunk, then periodically flushes them to disk (or object storage) as immutable chunks.
+
+Retention & compaction. Once a chunk is older than your configured retention_period, or after a certain chunk_idle_period, Loki will either delete it (if on local FS) or move it to long-term storage (if you’ve set up an S3/GCS bucket).
+
+Missed files. If you’re using only the local filesystem (no object store) and your retention is shorter than the query window, those files will simply have been deleted — hence the “no such file” error.
+
+How to fix
+1. Extend local retention (if you want to keep everything on disk)
+Edit your Loki config to bump up compactor/table_manager retention:
+
+yaml
+Copy
+Edit
+storage_config:
+  boltdb:
+    directory: /var/loki/index
+
+  filesystem:
+    directory: /var/loki/chunks
+
+compactor:
+  retention_enabled: true
+  retention_delete_delay: 2h           # wait 2 hours after chunk expires
+  retention_delete_worker_count: 1
+
+table_manager:
+  retention_deletes_enabled: true
+  retention_period: 168h               # keep 7 days of data locally
+Restart Loki so old chunks remain on disk long enough to answer your 30 + minute queries.
+
+2. Plug in object storage for long-term
+If you need months (or years) of logs, use S3/GCS/Azure as your chunk store:
+
+yaml
+Copy
+Edit
+storage_config:
+  aws:
+    s3: s3://my-bucket/loki/chunks
+
+  boltdb_shipper:
+    active_index_directory: /var/loki/index
+    shared_store: aws
+
+schema_config:
+  configs:
+    - from: 2020-10-24
+      store: boltdb-shipper
+      object_store: aws
+      schema: v11
+      index:
+        prefix: index_
+        period: 24h
+With this, even if files are flushed locally, Loki will re-hydrate them from S3 on demand.
+
+3. Verify your query time parameters
+Grafana’s $__range often covers a dashboard span (e.g. 1 h), and $__interval is the bucket size. If you’re manually testing in Explore, short tests will work but longer ones hit missing data. Try in Explore:
+
+promql
+Copy
+Edit
+sum by (status) (
+  count_over_time({app="server"}[1h])
+)
+If that errors, you know it’s not Grafana — it’s Loki’s storage.
+
+4. Short-term workaround
+If you only care about “recent” logs, you can limit your query to what you know still exists locally:
+
+promql
+Copy
+Edit
+sum by (status) (
+  count_over_time({app="server"}[15m])
+)
+or drop the missing-chunk errors via Grafana’s “max data points” / “timeout” settings — but that only sidesteps the symptom.
+
+In summary
+Short queries (< chunk/retention window): succeed because the chunks are still on disk
+
+Longer queries: fail because Loki has deleted or off-loaded those chunk files
+
+Permanent fix: increase retention_period on local FS or switch to an object store (“boltdb-shipper”) so that all your chunks can be reloaded on demand.
