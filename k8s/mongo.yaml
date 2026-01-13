@@ -22,8 +22,7 @@ spec:
               value: admin
             - name: MONGO_INITDB_ROOT_PASSWORD
               value: admin
-          args:
-            - "--bind_ip_all"
+
 ---
 apiVersion: v1
 kind: Service
