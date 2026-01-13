@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: server
-        image: aaakkiiff/goals_project_backend:6
+        image: aakkiiff/goals_project_backend:phase3-demo-1
         ports:
         - containerPort: 5000
 ---
