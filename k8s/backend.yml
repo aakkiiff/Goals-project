@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: backend-conatiner
-        image: aakkiiff/test:1be
+        image: aakkiiff/goals_project_backend:phase4-demo
         resources:
           limits:
             memory: "128Mi"
