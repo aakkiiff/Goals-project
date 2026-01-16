@@ -25,5 +25,8 @@
 			 - and paste the jenkinscode to the script section
 4. add dockerhub and github creds to jenkins and have ur own env vars.
 5. push tthe code to dev branch,make pr,jenkin will trigger and send the tag to master branch.then review the PR and code will be merged
-	 
+   
+## CI Pipeline Test - January 2026
+Testing automated Docker build & push
+'''
 
