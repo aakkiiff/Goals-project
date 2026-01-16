@@ -33,12 +33,3 @@ kubectl apply -f ./k8s
 - import the grafana dashboards from the `./grafana-dashboards/`directory
 
 
-## feature to be introduced
-- pvc, pv should be added and monitored
-	- total pv, pvc
-	- used pv,pvc
-	- % used pv,pvc
-	- number of pv,pvc
-	- dangling pvc,pv
-	- ...
-	- ...
