@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: cluster-url
 data:
-  database: "cluster1.uktxj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster1"
+  database: "mongodb:27017"
