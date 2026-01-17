@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         IMAGE_TAG = "${BUILD_NUMBER}"
-        DOCKERHUB_USER = 'aakkiiff'
+        DOCKERHUB_USER = 'iankibria'
         FRONTEND_APP = "goals_project_frontend"
         BACKEND_APP = "goals_project_backend"
         FRONTEND_IMAGE = "${DOCKERHUB_USER}/${FRONTEND_APP}"
@@ -20,7 +20,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git 'https://github.com/aakkiiff/Goals-project'
+                git 'https://github.com/iankibria-beep/IansGoals-project'
             }
         }
 
@@ -65,19 +65,19 @@ pipeline {
                  }
              }
 
-        stage("PUSH THE CHANGED TAGGED FILE TO GIT MAS"){
-            steps{
-                sh 'git config --global user.email jackakif@gmail.com'
-                sh 'git config --global user.name aakkiiff'
-                sh 'git add ./k8s/client-deployment.yml'
-                sh 'git add ./k8s/server-deployment.yml'
-                sh 'git commit -m "updated tag to ${IMAGE_TAG}"'
-
-                withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'pass', usernameVariable: 'uname')]) {
-                    sh 'git push https://$uname:$pass@github.com/aakkiiff/Goals-project_config.git master'
-                    }
-                }
-        }
-            
-     }
-}
+//        stage("PUSH THE CHANGED TAGGED FILE TO GIT MAS"){
+//            steps{
+//                sh 'git config --global user.email ian.kibria@outlook.com'
+//                sh 'git config --global user.name iankibria-beep'
+//                sh 'git add ./k8s/client-deployment.yml'
+//                sh 'git add ./k8s/server-deployment.yml'
+//                sh 'git commit -m "updated tag to ${IMAGE_TAG}"'
+//
+//               withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'pass', usernameVariable: 'uname')]) {
+//                    sh 'git push https://$uname:$pass@github.com/aakkiiff/Goals-project_config.git master'
+//                    }
+//                }
+//        }
+//            
+//     }
+//}

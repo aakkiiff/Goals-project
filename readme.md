@@ -1,29 +1,53 @@
-**THIS PROJECT IS DONE NON GITOPS WAY, SINGLE REPOSITORY 2 BRANCH(DEV,MASTER),FOR PERSONAL TESTING PURPOSES,ONLY CI PART**
+# Goals Project - CI/CD Pipeline
 
-# 1 Repo 2 branch jenkins CI - :
+## Project Overview
+Automated CI/CD pipeline using Jenkins, Docker, and GitHub webhooks to build and deploy a full-stack web application.
 
-  ![Diagram](https://github.com/aakkiiff/Goals-project/blob/dev/diagram.jpg)
-  
-  **how to use it?**
-  
+## Technologies Used
+- **Cloud:** AWS EC2 (Ubuntu 24.04)
+- **CI/CD:** Jenkins (containerized)
+- **Containerization:** Docker
+- **Version Control:** GitHub
+- **Registry:** DockerHub
+- **Automation:** GitHub Webhooks
 
- 1. push the code to the dev branch of the repository.
- 2. raise a PR
- 3. before that you have to configure github webhook and jenkins plugin to only trigger only if dev -> master branch is raised PR for.To do this:
-	 1. have jenkins,docker running on public cloud(aws ec2).
-	 2. add jenkins to docker group
-	 3. plugin download: Generic Webhook Trigger
-	 4. make a pipeline, check generic webhook trigger.
-	 5. check post content parameter.assign variables which you are willing to grab from github webhook payload.To do this:
-			 - go to github webhook config page.
-			 - make a pipeline, check generic webhook trigger.and from here name the token "something" and grab the webhook url, http://jenkins_url/generic-webhook-trigger/invoke?token=something,save the pipeline for now.and pass the url to github and content type=json,event=pullrequest,save.it should be green ticked
-			 - now make a pull request and from webhook recent deliveries u need to grab 
-			 - action,base,head name. using jsonpath
-			 -  in jenkins post c parameter config, add name of variable = action,expression= `$.action` , jsonpath
-			 -  same thing for base,`$.pull_request.base.ref` and head, `$.pull_request.head.ref`
-			 - now var is assigned ,u need to use it to varify the webhook trigger reason and trigger jenkins.thus go to optional filters, Expression = `^opened master dev$` and text = `$action $base $head`
-			 - and paste the jenkinscode to the script section
-4. add dockerhub and github creds to jenkins and have ur own env vars.
-5. push tthe code to dev branch,make pr,jenkin will trigger and send the tag to master branch.then review the PR and code will be merged
-	 
+## Architecture
+```
+GitHub (PR) → Webhook → Jenkins → Docker Build → DockerHub
+```
 
+## Implementation
+
+### Infrastructure
+- EC2 instance: m7i-flex.large
+- Jenkins running in Docker container
+- Ports: 22 (SSH), 8080 (Jenkins), 80 (HTTP)
+
+### Pipeline Workflow
+1. Developer creates Pull Request (dev → master)
+2. GitHub sends webhook to Jenkins
+3. Jenkins Generic Webhook Trigger filters for PR events
+4. Jenkinsfile stages execute:
+   - Checkout code from repository
+   - Build frontend Docker image
+   - Build backend Docker image
+   - Push images to DockerHub
+5. Images available in DockerHub registry
+
+## Results
+✅ Automated Docker image builds on PR creation  
+✅ Images successfully pushed to DockerHub  
+✅ Full CI automation achieved  
+
+### DockerHub Images
+- Frontend: `iankibria/goals_project_frontend:latest`
+- Backend: `iankibria/goals_project_backend:latest`
+
+## Links
+- **DockerHub:** https://hub.docker.com/u/iankibria
+- **Jenkins Pipeline:** (Include screenshot)
+
+## Author
+[Ian Kibria]  
+[PIIT DevOps]  
+[Jan 2026]
