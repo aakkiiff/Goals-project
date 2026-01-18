@@ -2,8 +2,6 @@
     kind: Ingress
     metadata:
       name: ingress-service
-      # annotations:
-      #   nginx.ingress.kubernetes.io/use-regex: 'true'
     spec:
       ingressClassName: nginx
       rules:
