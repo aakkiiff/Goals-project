@@ -77,7 +77,7 @@ secret:
 
 configmap:
   # -- If enabled, promtail config will be created as a ConfigMap instead of a secret
-  enabled: true
+  enabled: false
 
 initContainer: []
   # # -- Specifies whether the init container for setting inotify max user instances is to be enabled
@@ -423,7 +423,7 @@ config:
   # Must be reference in `config.file` to configure `clients`
   # @default -- See `values.yaml`
   clients:
-    - url: http://loki-loki-distributed-gateway/loki/api/v1/push
+    - url: http://my-loki-gateway/loki/api/v1/push
   # -- Configures where Promtail will save it's positions file, to resume reading after restarts.
   # Must be referenced in `config.file` to configure `positions`
   positions:
@@ -593,7 +593,7 @@ httpPathPrefix: ""
 
 sidecar:
   configReloader:
-    enabled: true
+    enabled: false
     image:
       # -- The Docker registry for sidecar config-reloader
       registry: ghcr.io
@@ -645,4 +645,3 @@ extraObjects: []
   #     data:
   #       - key: promtail-oauth2-creds
   #         name: client_secret
-

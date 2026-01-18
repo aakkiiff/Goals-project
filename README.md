@@ -4,27 +4,26 @@
 1. Deploy loki and promtail via helm
 ```
 cd logging
+```
+2. deploy loki via loki helm chart
+```
+https://artifacthub.io/packages/helm/grafana/loki
 
-helm repo add grafana https://grafana.github.io/helm-charts
-helm repo update
 ```
+3. deploy promtail from promtail helm chart
 ```
-helm show values grafana/promtail > promtail.values.yaml
-helm show values grafana/loki-distributed > loki.values.yaml
+https://artifacthub.io/packages/helm/grafana/promtail
 ```
+4. update the values to the correct loki endpoint
 ```
-helm install promtail grafana/promtail --values promtail.values.yaml
-helm install loki grafana/loki-distributed --values loki.values.yaml
+  clients:
+    - url: http://my-loki-gateway/loki/api/v1/push
 ```
-- must update the promtail helm values to point to loki
+5. add loki data source in grafana
 ```
-clients:
- - url: http://loki-loki-distributed-gateway/loki/api/v1/push
+http://my-loki:3100
 ```
-- once everything is up, deploy grafana from previous stage and point grafana to get values from `http://loki-loki-distributed-query-frontend.ns-of-loki:3100`
-
-2. update the promtain scrape config fir the goals project backend
-`k apply -f promtailcm.yaml` 
-3. restart the promtail ds
-4. deploy the goals app
-5. import the loki dashboard from  `grafana-dashboards/logging/goals-serverlog-json`
+6. add a dashboard for visualizing logs
+```
+https://grafana.com/grafana/dashboards/15324-loki-logs-dashboard/
+```
